@@ -1,0 +1,7 @@
+<div class="chart">
+	<span class="bar" ng-repeat="bar in bars">
+		<span class="title">{{bar.period}}</span>
+		<span class="title spent">{{bar.total | currency:"₦":0}}</span>
+		<span class='level animated slideInLeft' ng-style="{'width': bar.width + '%'}"></span>
+	</span>
+</div>

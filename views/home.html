@@ -1,0 +1,30 @@
+<div class="content fullHeight">
+	<div class="small-6 columns no-pad" ng-controller="SubmitController">
+		<div class="pageTitle">
+			<img class="logo" src="img/logo.png" alt="">
+			<h1>Crunch your bank statement</h1>
+
+			<p>This is a simple app by @fathermerry to give insight into your spending and income. Download your GTB statement then upload here. <b>A unique hash is created for your data, and your statement is not saved.</b> You'll get a link to your email for reference, and can delete the records at any time.</b></p>
+		</div>
+		<form ng-submit="submit()" name="create" enctype="multipart/form-data" ng-hide="crunched">
+			<div class="small-12 columns no-pad">
+				<input type="email" name="email" class="email" ng-model="email" required autocomplete="off" placeholder="your@email.com">
+				<div class="btn" style="position: relative" ng-class="{disabled: create.$invalid || crunching}">
+					<i class="icon-upload m-r-s" ng-hide="crunching"></i> <span ng-hide="crunching">Upload Statement (xlsx)</span>
+					<i class="icon-spinner3 icon-spin m-r-s" ng-show="crunching"></i> <span ng-show="crunching">Preparing your summary</span>
+					<input class="cp" ng-hide="crunching" style="top: 0px; bottom: 0px; left: 0px; right: 0px; width: 100%; opacity: 0; position: absolute;" file-model="statement" type="file">
+				</div>
+				<div class="error animated shake" ng-show="error.state"><i class="icon-warning"></i> {{error.message}}</div>
+			</div>
+		</form>
+		<div class="pageTitle" ng-show="crunched">
+			<div class="animated fadeIn" ng-hide="deleted">
+				<h4 style="margin-bottom: 0"><i class="icon-checkmark"></i> <b>CRUNCHED AND READY</b> </h4>
+				<p style="margin-top: 10px"> We've sent you a link at <b>{{email}}</b>. To explore your data, start <a ui-sref="sheet.transactions({id: sheet.token})"><b>here</b></a>. If it's the wrong email address, <a ng-click="delete(sheet)"><b>delete record</b></a>
+					<i class="icon-spinner3 icon-spin m-r-s" ng-show="deleting"></i>
+				</p>
+			</div>
+			<h3 ng-show="deleted"><i class="icon-checkmark"></i> Your sheet details and transactions have all been deleted. <a ng-click="reset()">Create another summary</a>.</h3>
+		</div>
+	</div>
+</div>

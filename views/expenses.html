@@ -1,0 +1,85 @@
+<!-- <div id="navigation" ng-controller="HeaderCtrl" data-ng-include=" 'views/header.html' "></div> -->
+
+<!-- <div class="sidebar equal animated slideInLeft">
+	<p class="sidebar-title">ALL SPENDING</p>
+	<h3>{{expenses.stats.total | currency:"₦":0}}</h3>
+
+	<p class="sidebar-title">AVERAGE MONTHLY SPENDING</p>
+	<h3>{{expenses.stats.average_month | currency:"₦":0}}</h3>
+
+	<div ng-repeat="s in expenses.stats.pattern">
+		<p class="sidebar-title">{{s.period}}</p>
+		<h3>{{s.total | currency:"₦":0}}</h3>
+	</div>
+</div> -->
+
+<div class="sidebar">
+	<p class="sidebar-title">Spending Pattern</p>
+	<chart values="expenses.stats.pattern"></chart>
+
+	<p class="sidebar-title">Captain Obvious</p>
+	<p>You spent the most in {{insights.best.month}} with a combined total of {{insights.best.total | currency:"₦":0}}</p>
+	<p ng-show="expenses.stats.pattern.length > 1">{{insights.worst.month}} saw the least spending, {{insights.worst.percent}} percent less than your best month</p>
+	<p>There have been {{insights.total_debits}} total debits to this account in this period</p>
+	<p>Commissions have been {{insights.commision_percentage < 1 ? "less than one" : insights.commision_percentage}} percent of your totals</p>
+</div>
+
+<div class="content">
+	<div class="small-12 columns no-pad">
+		<div class="card text-center" ng-show="expenses.stats.pattern.length > 1">
+			Choose Month:
+			<span class="month-filters">
+				<a ng-click="reload()" ng-class="{active: !$stateParams.month}">All</a>
+				<a ng-click="reload(m.period)" ng-class="{active: $stateParams.month == m.period}" ng-repeat="m in expenses.stats.pattern">{{m.period}}</a>
+			</span>
+		</div>
+		<div class="card">
+			<h5 class="text-center">TOTAL EXPENSES FOR THIS PERIOD - <b>{{expenses.stats.subtotal | currency:"₦":0}}</b></h5>
+			<div class="large-12 columns text-center">
+				<div class="type" ng-repeat="type in expenses.types" ng-click="filterBy(type.tag)" ng-class="{disabled: filter.tag && filter.tag != type.tag }">
+					<span class="type_name">{{type.name}} (₦)</span>
+					<div class="transaction_count" ng-class="{selected: filter.tag == type.tag}">
+						<span class="alt" count-to="{{type.transaction_amount}}" duration="1"></span>
+						<small class="transaction_value">{{type.transaction_count}} Transactions</small>
+					</div>
+					<div ng-show="filter.tag == type.tag" class="clear_filter">&#x2715;</div>
+				</div>
+			</div>
+
+			<div class="medium-12 columns" ng-init="limit = 10" >
+				<div class="card text-center">
+					Sort By:
+					<span class="month-filters">
+						<a ng-click="shuffle('date', false)" ng-class="{active: !sort.by || sort.by == 'date'}">Date</a>
+						<a ng-click="shuffle('debit', true)" ng-class="{active: sort.by == 'debit' && sort.asc}">Highest Amount</a>
+						<a ng-click="shuffle('debit', false)" ng-class="{active: sort.by == 'debit' && !sort.asc}">Lowest Amount</a>
+					</span>
+				</div>
+				<table class="rwd-table animated fadeIn">
+				  <tr>
+					<th><span class="icon"></span></th>
+					<th style="width: 120px">Date</th>
+					<th>Ref</th>
+					<th>Amount</th>
+					<th>Remarks</th>
+				  </tr>
+				  <tr ng-repeat="expense in filtered = (expenses.data | filter:filter) | orderBy:sort.by:sort.asc | limitTo: limit">
+					<td><span class="circle orange"></span></td>
+					<td data-th="Date">{{expense.date | date:'dd MMM, yyyy'}}</td>
+					<td data-th="Ref">{{expense.ref}}</td>
+					<td data-th="Amount">{{expense.debit | currency:"₦":0}}</td>
+					<td data-th="Remarks">{{expense.remarks}}</td>
+				  </tr>
+				</table>
+				<div class="text-center">					
+					<a ng-click="limit == 10 ? limit = null : limit = 10" ng-show="filtered.length > 10" ng-switch="limit == 10">
+						<span ng-switch-when="true">Show {{filtered.length - 10}} more transactions</span>
+						<span ng-switch-when="false">Hide transactions</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</div>

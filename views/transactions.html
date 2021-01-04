@@ -1,0 +1,123 @@
+<!-- <div id="navigation" ng-controller="HeaderCtrl" data-ng-include=" 'views/header.html' "></div> -->
+
+<div class="sidebar" ng-init="shuffle('date', false, 0)">
+
+	<p>SORT BY</p>
+	<ul class="sort animated slideInLeft">
+		<li><a ng-class="{active: filter[0]}" ng-click="shuffle('date', false, 0)">Time</a></li>
+		<li><a ng-class="{active: filter[1]}" ng-click="shuffle('expense_total', false, 1)">Lowest Spending</a></li>
+		<li><a ng-class="{active: filter[2]}" ng-click="shuffle('income_total', false, 2)">Lowest Income</a></li>
+		<li><a ng-class="{active: filter[3]}" ng-click="shuffle('expense_total', true, 3)">Highest Spending</a></li>
+		<li><a ng-class="{active: filter[4]}" ng-click="shuffle('income_total', true, 4)">Highest Income</a></li>
+	</ul>
+
+	<p>TIME PERIOD</p>
+	<ul class="sort animated slideInLeft">
+		<li><a ng-click="reload(true)" ng-class="{active: $stateParams.weekly}">Weekly</a></li>
+		<li><a ng-click="reload()" ng-class="{active: !$stateParams.weekly}">Monthly</a></li>
+	</ul>
+</div>
+
+<div class="content">
+	<div class="small-12 columns no-pad animated fadeInUp">
+		<div class="card" ng-repeat="t in transactions | orderBy:sort.by:sort.desc" ng-class="{expanded: cardExpanded}">
+			<div class="border medium-3 columns">
+				<h3 class="time-frame">{{t.time}}</h3>
+				<p class="opening-balance subtle">
+					<span>Opening Balance</span>
+					{{t.opening_balance | currency:"₦":0}}
+				</p>
+			</div>
+
+			<div class="border medium-3 columns" ng-class="{expanded: showIncome}">
+				<p class="title">Income(₦)</p>
+				<h3 class="amount gain animated fadeIn delay-4s">
+					<!-- <span count-to="{{t.income_total}}" duration="1" count-from="0"></span> -->
+					<span>{{t.income_total | currency:"":0}}</span>
+				</h3>
+				<a ng-click="showIncome = !showIncome; $parent.cardExpanded = !$parent.cardExpanded">
+					<span ng-hide="showIncome">VIEW ALL {{t.income.length}}</span>
+					<span ng-show="showIncome">CLOSE</span>
+				</a>
+			</div>
+
+			<div class="border medium-3 columns" ng-class="{expanded: showExpenses}">
+				<p class="title">Expenditure(₦)</p>
+				<h3 class="amount loss timer animated fadeIn delay-4s">
+					<!-- <span count-to="{{t.expense_total}}" duration="1" count-from="0"></span> -->
+					<span>{{t.expense_total | currency:"":0}}</span>
+				</h3>
+				<a ng-click="showExpenses = !showExpenses; $parent.cardExpanded = !$parent.cardExpanded">
+					<span ng-hide="showExpenses">VIEW ALL {{t.expenses.length}}</span>
+					<span ng-show="showExpenses">CLOSE</span>
+				</a>
+			</div>
+
+			<div class="medium-3 columns expanded">
+				<span class="titbit" ng-init="net_cash = t.income_total - t.expense_total" ng-class="{'text-danger': net_cash < 0}">Net Cash: <b>{{net_cash  | currency:"₦":0}}</b></span>
+				<span class="titbit">Transactions: <b>{{t.transactions}}</b></span>
+			</div>
+
+			<div class="medium-12 columns expanded">
+				<table class="rwd-table animated fadeIn" ng-show="showIncome">
+				  <tr>
+					<th width="20px"></th>
+					<th>Date</th>
+					<th>Ref</th>
+					<th>Amount</th>
+					<th>Remarks</th>
+				  </tr>
+				  <tr ng-repeat="income in t.income">
+					<td><span class="circle blue"></span></td>
+					<td data-th="Date">{{income.date | date:'shortDate'}}</td>
+					<td data-th="Ref">{{income.ref}}</td>
+					<td data-th="Amount">{{income.credit  | currency:"₦":0}}</td>
+					<td data-th="Remarks">{{income.remarks}}</td>
+				  </tr>
+				</table>
+
+				<table class="rwd-table animated fadeIn" ng-show="showExpenses">
+				  <tr>
+					<th><span class="icon"></span></th>
+					<th>Date</th>
+					<th>Ref</th>
+					<th>Amount</th>
+					<th>Remarks</th>
+				  </tr>
+				  <tr ng-repeat="expense in t.expenses">
+					<td><span class="circle orange"></span></td>
+					<td data-th="Date">{{expense.date | date:'shortDate'}}</td>
+					<td data-th="Ref">{{expense.ref}}</td>
+					<td data-th="Amount">{{expense.debit  | currency:"₦":0}}</td>
+					<td data-th="Remarks">{{expense.remarks}}</td>
+				  </tr>
+				</table>
+			</div>
+		</div>
+		<div class="card">
+			<div class="border medium-3 columns">
+				<p class="opening-balance">
+					<span>Totals</span>
+				</p>
+			</div>
+			<div class="border medium-3 columns">
+				<p class="opening-balance text-success">
+					<span>Total Credit</span>
+					{{credit | currency:"₦":0}}
+				</p>
+			</div>
+			<div class="border medium-3 columns">
+				<p class="opening-balance text-info">
+					<span>Total Debit</span>
+					{{debit | currency:"₦":0}}
+				</p>
+			</div>
+			<div class="medium-3 columns">
+				<p class="opening-balance">
+					<span>Net Off</span>
+					{{credit - debit | currency:"₦":0}}
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

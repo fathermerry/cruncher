@@ -1,0 +1,32 @@
+<div class="header">
+    <div class="logo">
+        <a href="#home"><img src="img/logo.png" alt="Logo"></a>
+    </div>
+    <ul class="menu">
+        <li><a ui-sref="sheet.transactions" ui-sref-active="active">Transactions</a></li>
+        <li><a ui-sref="sheet.expenses" ui-sref-active="active">Expenses</a></li>
+        <li><a ui-sref="sheet.income" ui-sref-active="active">Income</a></li>
+        <li><a ui-sref="sheet.search" ui-sref-active="active">Search</a></li>
+    </ul>
+    <div class="account">
+        <div class="details">
+            <span class="number">{{sheet.from | date: 'mediumDate'}} to {{sheet.to | date: 'mediumDate'}}</span>
+            <span class="name">{{sheet.name || "Lagbaja" | words:2}} - {{sheet.account}}</span>
+        </div>
+        <div class="trash">
+            <img ng-click="deleteSheet = true" src="img/trash.png" alt="Avatar">
+        </div>
+    </div>
+</div>
+
+<div class="dialog" ng-show="deleteSheet">
+    <div class="dialog__overlay animated fadeIn"></div>
+    <div class="dialog__content animated slideInDown">
+        <h3>Adios, data</h3>
+        <p>I hope the information and everything was in some way useful to you. If you have any ideas for me, email me at opemipoaikomo@gmail.com</p>
+
+
+        <a ng-click="deleteSheet = false" class="btn btn-large btn-clear">Cancel and return</a>
+        <a ng-click="delete()" class="btn btn-large btn-red">Thanks, Delete Sheet</a>
+    </div>
+</div>

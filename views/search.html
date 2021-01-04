@@ -1,0 +1,68 @@
+<div class="sidebar" ng-init="shuffle()">
+
+	<p>SORT BY</p>
+	<ul class="sort">
+		<li><a ng-class="{active: sorts[0]}" ng-click="shuffle('date', false, 0)">Time</a></li>
+		<li><a ng-class="{active: sorts[1]}" ng-click="shuffle('amount', false, 1)">Amount</a></li>
+	</ul>
+
+	<p>FILTER BY</p>
+	<ul class="sort">		
+		<li><a ng-class="{active: filters[0]}" ng-click="shuffle('', true, 0)">All</a></li>
+		<li><a ng-class="{active: filters[1]}" ng-click="shuffle('debit', true, 1)">Credit Only</a></li>
+		<li><a ng-class="{active: filters[2]}" ng-click="shuffle('credit', true, 2)">Debit Only</a></li>
+	</ul>
+</div>
+
+<div class="content" ng-init="query = $stateParams.query">
+	<div class="small-12 columns no-pad">
+		<div class="search-bar medium-12 columns animated fadeInDown">
+			<input type="text" ng-enter="search(query)" ng-model="query" placeholder="Search through your transactions for a record" focus="true">
+		</div>
+		<div ng-show="transactions != null" class="animated fadeInUp">
+			<div class="card" ng-show="transactions != null">
+				<h4 class="text-center text-capitalize">{{transactions.length}} transactions for {{::query}}</h4>
+				<div class="medium-12 columns">
+					<table class="rwd-table animated fadeIn">
+					  <tr>
+						<th width="20px"></th>
+						<th>Type</th>
+						<th width="100px">Date</th>
+						<th>Ref</th>
+						<th>Amount</th>
+						<th>Remarks</th>
+					  </tr>
+					  <tr ng-repeat="t in transactions | orderBy:sort.by | filter:filter">
+						<td><span class="circle" ng-class="{blue: t.credit, orange: t.debit}"></span></td>
+						<td data-th="Type">{{t.debit ? "Expense" : "Credit"}}</td>
+						<td data-th="Date"> {{t.date | date:'MMM d, y'}}</td>
+						<td data-th="Ref">{{t.ref}}</td>
+						<td data-th="Amount" ng-init="t.amount = t.credit || t.debit">{{t.amount | currency:"₦":0}}</td>
+						<td data-th="Remarks">{{t.remarks}}</td>
+					  </tr>
+					</table>
+				</div>
+			</div>
+			<div class="card">
+				<div class="border medium-4 columns">
+					<p class="opening-balance text-success">
+						<span>Total Credit</span>
+						{{credit | currency:"₦":0}}
+					</p>
+				</div>
+				<div class="border medium-4 columns">
+					<p class="opening-balance text-info">
+						<span>Total Debit</span>
+						{{debit | currency:"₦":0}}
+					</p>
+				</div>
+				<div class="medium-4 columns">
+					<p class="opening-balance">
+						<span>Net Off</span>
+						{{credit - debit | currency:"₦":0}}
+					</p>
+				</div>
+			</div>
+			</div>
+	</div>
+</div>
